@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: redirect('/events') # http://localhost:3000/events へのrootルーティング
+  root to: redirect('/events')
 
   get 'events',          to: 'site#index'
   get 'events/new',      to: 'site#index'

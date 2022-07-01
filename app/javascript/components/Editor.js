@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import EventList from './EventList';
+import { Routes, Route } from 'react-router-dom';
+import Event from './Event';
 
 const Editor = () => {
   const [events, setEvents] = useState([]);
