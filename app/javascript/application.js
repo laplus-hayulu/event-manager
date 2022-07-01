@@ -11,7 +11,7 @@ const root      = createRoot(container);
 document.addEventListener('DOMContentLoaded', () => {
   root.render(
     <StrictMode>
-      <App />);
+      <App />
     </StrictMode>
   );
 });
