@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
-import { isEmptyObject, validateEvent } from '../helpers/helpers';
+import React, { useState, useRef, useEffect } from 'react';
+import Pikaday from 'pikaday';
+import 'pikaday/css/pikaday.css';
+import { isEmptyObject, validateEvent, formatDate } from '../helpers/helpers';
 
 const EventForm = () => {
   const[event, setEvent] = useState({
@@ -10,21 +12,42 @@ const EventForm = () => {
     host:'',
     published: false,
   });
-
   const [formErrors, setFormErrors] = useState({});
 
-  const handleInputChange = (e) => {
-    const { target } = e;
-    const { name }   = target;
-    const value = target.type === 'checkbox' ? target.checked:target.value;
+  const dateInput = useRef(null);
 
-    setEvent({...event, [name]: value});
-  };
+  const handleInputChange = (e) => {
+  const { target } = e;
+  const { name } = target;
+  const value = target.type === 'checkbox' ? target.checked : target.value;
+
+  updateEvent(name, value);
+};
+
+  useEffect(() => {
+  const p = new Pikaday({
+    field: dateInput.current,
+    onSelect: (date) => {
+      const formattedDate = formatDate(date);
+      dateInput.current.value = formattedDate;
+      updateEvent('event_date', formattedDate);
+    },
+  });
+
+  // クリーンアップ用の関数を返す
+  // Reactはアンマウントの前にこれを呼び出す
+  return () => p.destroy();
+}, []);
+
+const updateEvent = (key, value) => {
+setEvent((prevEvent) => ({ ...prevEvent, [key]: value }));
+};
 
  const renderErrors = () => {
    if(isEmptyObject(formErrors)) {
      return null;
-   }
+ }
+
 
    return (
       <div className="errors">
@@ -64,7 +87,12 @@ const EventForm = () => {
         <div>
           <label htmlFor="event_date">
             <strong>Date:</strong>
-            <input type="text" id="event_date" name="event_date" onChange={handleInputChange} />
+            <input
+               type="text"
+               id="event_date"
+               name="event_date"
+               ref={dateInput}
+               autoComplete="off" />
           </label>
         </div>
         <div>
